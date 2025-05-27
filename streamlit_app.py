@@ -167,7 +167,7 @@ elif st.session_state.page == 'main' and st.session_state.authenticated:
                         top_n=top_n
                     )
                 else:
-                    print("Placeholder for Unsupervised Learning Results")
+                    st.error("Placeholder for Unsupervised Learning Results")
                 
                 
     # Display recommendations if available
@@ -221,17 +221,6 @@ elif st.session_state.page == 'main' and st.session_state.authenticated:
     elif st.session_state.recommendations is not None and st.session_state.recommendations.empty:
         st.warning("⚠️ No jobs found matching your profile.")
 
-
-# ---------- PAGE: CHATBOT ----------
-elif st.session_state.page == 'chatbot':
-    st.title("💬 InnoDatatics Chat")
-
-    if st.button("🔙 Back to Recommender"):
-        st.session_state.page = 'main'
-        st.rerun()
-
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
             
 
 # ----------- ADMIN VIEW PAGE -----------
