@@ -5,7 +5,6 @@ import time
 from datetime import datetime
 import uuid
 from recommender import recommend_jobs
-from unsupervised_recommender import recommend_unsupervised
 
 # 🔧 Set constant layout and page width for all pages
 st.set_page_config(
@@ -124,9 +123,6 @@ elif st.session_state.page == 'main' and st.session_state.authenticated:
         st.session_state.page = 'login'
         st.rerun()
 
-    if st.button("Chatbot Help"):
-        st.session_state.page = "chatbot"
-        st.rerun()
 
     # User input form
     with st.form("user_input_form"):
@@ -171,12 +167,7 @@ elif st.session_state.page == 'main' and st.session_state.authenticated:
                         top_n=top_n
                     )
                 else:
-                    st.session_state.recommendations = recommend_unsupervised(
-                        skills=skills_str,  # Convert list to comma-separated string
-                        location=location,
-                        expected_monthly_salary=salary,
-                        top_n=top_n
-                    )
+                    print("Placeholder for Unsupervised Learning Results")
                 
                 
     # Display recommendations if available
@@ -241,55 +232,6 @@ elif st.session_state.page == 'chatbot':
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
-
-    # Chatbot Logic
-    def get_chatbot_response(user_message):
-        try:
-            question_lower = user_message.lower()
-
-            if "how does" in question_lower and "work" in question_lower:
-                return "This platform recommends jobs based on your skills, location, and salary using a combination of ML models and semantic similarity."
-
-            elif "recommendation" in question_lower:
-                return "Job recommendations are personalized suggestions based on your profile inputs."
-
-            elif "how do i" in question_lower and ("apply" in question_lower or "save" in question_lower):
-                return "Currently, you can express interest in a job, which we log. External application links will be integrated in the future."
-
-            elif "who built" in question_lower or "developer" in question_lower:
-                return "This platform was developed by a data science enthusiast to streamline job discovery using AI."
-
-            # Fallback to GPT-4 via OpenAI
-            import openai
-            openai.api_key = st.secrets["OPENAI_API_KEY"]
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant for a job recommendation platform."},
-                    {"role": "user", "content": user_message}
-                ],
-                temperature=0.7,
-                max_tokens=300
-            )
-            return response["choices"][0]["message"]["content"]
-
-        except Exception as e:
-            return f"⚠️ I'm having trouble responding right now. (Error: {e})"
-
-    # Show previous messages
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
-
-    # Handle new user input
-    if prompt := st.chat_input("Type your message…"):
-        st.session_state.messages.append({"role": "user", "content": prompt})
-
-        with st.chat_message("assistant"):
-            with st.spinner("Thinking..."):
-                response = get_chatbot_response(prompt)
-            st.markdown(response)
-            st.session_state.messages.append({"role": "assistant", "content": response})
             
 
 # ----------- ADMIN VIEW PAGE -----------
